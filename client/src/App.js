@@ -1,10 +1,17 @@
 import React, { Component } from "react";
+// import Button from '@mui/material/Button';
+// import Box from '@mui/material/Box';
+// import ButtonGroup from '@mui/material/ButtonGroup';
+import kycImg from "../src/assets/kyc.jpg";
+import verifImg from "../src/assets/verif.png"
+
+
 import KycBlockChain from "./contracts/KycBlockChain.json";
 import getWeb3 from "./getWeb3";
 import "./App.css";
-const crypto = require("crypto");
+const crypto = require("crypto-browserify");
 
-const GetAllBankAccounts = (props) => {
+const GetAllBankAccounts = (props) => {   
   if (parseInt(props.bankcount) > 0) {
     return (
       <div>
@@ -77,7 +84,7 @@ class App extends Component {
     account: null,
     contract: null,
     name: null,
-    aadhar: null,
+    cin: null,
     pan: null,
     getdata: null,
     data_hash: null,
@@ -90,7 +97,7 @@ class App extends Component {
     status: null,
     requestAddress: null,
     bankrequests: [],
-    aadharVerify: null,
+    cinVerify: null,
     panVerify: null,
     verified: null,
   };
@@ -109,6 +116,7 @@ class App extends Component {
         KycBlockChain.abi,
         deployedNetwork && deployedNetwork.address
       );
+      console.log(deployedNetwork.address , networkId , instance);
 
       // Set web3, accounts, and contract to the state, and then proceed with an
       // example of interacting with the contract's methods.
@@ -134,8 +142,8 @@ class App extends Component {
   myNameChangeHandler = (event) => {
     this.setState({ name: event.target.value });
   };
-  myAadharChangeHandler = (event) => {
-    this.setState({ aadhar: event.target.value });
+  myCinChangeHandler = (event) => {
+    this.setState({ cin: event.target.value });
   };
   myPanChangeHandler = (event) => {
     this.setState({ pan: event.target.value });
@@ -150,7 +158,7 @@ class App extends Component {
   };
 
   myData1ChangeHandler = (event) => {
-    this.setState({ aadharVerify: event.target.value });
+    this.setState({ cinVerify: event.target.value });
   };
 
   myData2ChangeHandler = (event) => {
@@ -191,7 +199,7 @@ class App extends Component {
         this.state.name,
         crypto
           .createHash("sha1")
-          .update(this.state.aadhar + this.state.pan)
+          .update(this.state.cin + this.state.pan)
           .digest("hex"),
         this.state.bank_verify
       )
@@ -224,7 +232,7 @@ class App extends Component {
 
     const dhash = crypto
       .createHash("sha1")
-      .update(this.state.aadharVerify + this.state.panVerify)
+      .update(this.state.cinVerify + this.state.panVerify)
       .digest("hex");
 
     if (dhash === this.state.data_hash) {
@@ -294,7 +302,7 @@ class App extends Component {
           this.state.name,
           crypto
             .createHash("sha1")
-            .update(this.state.name + this.state.aadhar + this.state.pan)
+            .update(this.state.name + this.state.cin + this.state.pan)
             .digest("hex"),
           this.state.bank_verify
         )
@@ -392,31 +400,92 @@ class App extends Component {
       );
   };
 
+
+
+
+  
   render() {
     if (!this.state.web3) {
-      return <div>Loading Web3, accounts, and contract...</div>;
+      return <div style={{backgroundColor:"#eef5db",color:"#fe5f55", fontFamily:"Arimo" , fontSize : "20px", fontWeight :"900"}}>Loading Web3, accounts, and contract...</div>;
     }
 
     return (
-      <div className="App">
-        <h2>Current Account is a {this.state.entity} entity</h2>
-        <h3>{this.state.account}</h3>
-        <div className="form-top-padding">
-        <fieldset>
-          <div className="form-title">
-            <strong>
-            Verified Organisation Addresses
-            </strong>
-            </div>
-          <GetAllBankAccounts
-            bankcount={this.state.bank_count}
-            banks={this.state.allbanks}
-          />
-        </fieldset>
-        </div>
-   
-        <div className="main-buttons-container form-top-padding form-bottom-padding">
+      <div className='home__hero-section darkBg'>
+        <div className='container'>
+        <div
+            className='row home__hero-row'
+            style={{
+              display: 'flex',
+              flexDirection: 'row'
+            }}
+          >
+          <div className='col'>
+            <div className='home__hero-text-wrapper'>
+        <h2 className='heading '>Current Account is a {this.state.entity} entity
+        
+            <img src={verifImg} alt="verif"  />
+            
+        </h2>
+        <h3 className='home__hero-subtitle '
+                    style={{
+                      padding:"15px"
+                    }}>{this.state.account}</h3>
+       
+   </div>
+        <div >
+
+        {/* <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        '& > *': {
+          m: 1,
+        },
+      }}
+    >
+      <ButtonGroup size="large" aria-label="large button group">
+      <Button onClick={() => {
+              show("new-customer");
+            }}
+            id="new-customer-button">New customer</Button>
+            <Button onClick={() => {
+              show("existing-customer");
+            }}
+            id="existing-customer-button"
+          >
+            Existing customer</Button>
+            <Button onClick={() => {
+              show("new-bank");
+            }}
+            id="new-bank-button"
+          >
+            New Organisation</Button>
+            <Button onClick={() => {
+              show("existing-bank");
+            }}
+            id="existing-bank-button"
+          >
+            View Organisation internal access</Button>
+      </ButtonGroup>
+
+    </Box> */}
+    
+    <fieldset style={{
+          padding:"15px"
+        }}>
           <button
+          style = {{
+            cursor:" pointer",
+            height: "40px",
+            /* margin-left: 4,0px; */
+            fontSize: "12px",
+            padding: "4px 18px",
+            margin: "5px",
+            backgroundColor: "aliceblue",
+            transition: "all 0.4s ease-out",
+            border: "none",
+          }}
             onClick={() => {
               show("new-customer");
             }}
@@ -425,6 +494,17 @@ class App extends Component {
             New customer
           </button>
           <button
+          style = {{
+            cursor:" pointer",
+            height: "40px",
+            /* margin-left: 4,0px; */
+            fontSize: "12px",
+            padding: "4px 18px",
+            margin: "5px",
+            backgroundColor: "aliceblue",
+            transition: "all 0.4s ease-out",
+            border: "none",
+          }}
             onClick={() => {
               show("existing-customer");
             }}
@@ -433,6 +513,17 @@ class App extends Component {
             Existing customer
           </button>
           <button
+          style = {{
+            cursor:" pointer",
+            height: "40px",
+            /* margin-left: 4,0px; */
+            fontSize: "12px",
+            padding: "4px 18px",
+            margin: "5px",
+            backgroundColor: "aliceblue",
+            transition: "all 0.4s ease-out",
+            border: "none",
+          }}
             onClick={() => {
               show("new-bank");
             }}
@@ -441,6 +532,17 @@ class App extends Component {
             New Organisation
           </button>
           <button
+          style = {{
+            cursor:" pointer",
+            height: "40px",
+            /* margin-left: 4,0px; */
+            fontSize: "12px",
+            padding: "4px 18px",
+            margin: "5px",
+            backgroundColor: "aliceblue",
+            transition: "all 0.4s ease-out",
+            border: "none",
+          }}
             onClick={() => {
               show("existing-bank");
             }}
@@ -448,16 +550,20 @@ class App extends Component {
           >
             View Organisation internal access
           </button>
+          </fieldset>
         </div>
 
       
 
         <div className="new-customer form-top-padding">
           <form action="." method="" onSubmit={this.create_customer}>
-            <fieldset>
-           
-                <div className="form-title form-bottom-padding">
-                <strong>Customer Registration Form (New customers only)</strong>
+            
+            <fieldset style={{
+          padding:"15px"
+        }}>
+                <div className='home__hero-text-wrapper'>
+                 
+                <strong style={{color:"#97d8c4", fontFamily:"Arimo" , fontSize : "20px", fontWeight :"900"}}>Customer Registration Form (New customers only)</strong>
                 </div>
 
               <p>
@@ -466,12 +572,12 @@ class App extends Component {
               </p>
 
               <p>
-                <label>Your Aadhar </label>
-                <input type="text" onChange={this.myAadharChangeHandler} />
+                <label>Your ID </label>
+                <input type="text" onChange={this.myCinChangeHandler} />
               </p>
 
               <p>
-                <label>Your Pan </label>
+                <label>Your Pan : Permanent Account Number </label>
                 <input type="text" onChange={this.myPanChangeHandler} />
               </p>
 
@@ -490,9 +596,11 @@ class App extends Component {
 
         <div className="new-bank">
           <form action="." method="" onSubmit={this.create_bank}>
-            <fieldset>
-            <div className="form-title form-bottom-padding">
-                <strong>Organisation registration form (New organisations only)</strong>
+          <fieldset style={{
+          padding:"15px"
+        }}>
+            <div >
+                <strong style={{color:"#97d8c4", fontFamily:"Arimo" , fontSize : "20px", fontWeight :"900"}}>Organisation registration form (New organisations only)</strong>
                 </div>
               <p>
                 <label>Organisation Name </label>
@@ -501,16 +609,18 @@ class App extends Component {
               <p>
                 <input type="submit" name="submit" value="Create bank" />
               </p>
-            </fieldset>
+              </fieldset>
           </form>
         </div>
 
         <div className="existing-customer">
           <form action="." method="" onSubmit={this.modify_data}>
-            <fieldset>
+          <fieldset style={{
+          padding:"15px"
+        }}>
               
-            <div className="form-title form-bottom-padding">
-                <strong>Update existing customer data (existing customers only)</strong>
+            <div >
+                <strong style={{color:"#97d8c4", fontFamily:"Arimo" , fontSize : "20px", fontWeight :"900"}}>Update existing customer data (existing customers only)</strong>
              </div>
               
               <p>
@@ -518,11 +628,11 @@ class App extends Component {
                 <input type="text" onChange={this.myNameChangeHandler} />
               </p>
               <p>
-                <label>New Aadhar </label>
-                <input type="text" onChange={this.myAadharChangeHandler} />
+                <label>New ID </label>
+                <input type="text" onChange={this.myCinChangeHandler} />
               </p>
               <p>
-                <label>New Pan </label>
+                <label>New Pan : Permanent Account Number </label>
                 <input type="text" onChange={this.myPanChangeHandler} />
               </p>
               <p>
@@ -535,17 +645,20 @@ class App extends Component {
             </fieldset>
           </form>
         </div>
-
+        <br />
         <div className="existing-bank">
-          <fieldset>
-          <div className="form-title form-bottom-padding">
-                <strong>Requests</strong>
+          <fieldset style={{
+          padding:"15px"
+        }}>
+          <div>
+          
+                <strong style={{color:"#97d8c4", fontFamily:"Arimo" , fontSize : "20px", fontWeight :"900"}}>Requests</strong>
              </div>
             <p>
               <button onClick={this.viewRequests}>View user Requests</button>
             </p>
             <GetAllBankRequests bankrequests={this.state.bankrequests} />
-            <div className="form-top-padding">
+            <div >
             <p>
               <label>Request Address </label>
               <input type="text" onChange={this.requestAddressChange} />
@@ -560,44 +673,90 @@ class App extends Component {
                 Reject Request
               </button>
             </p>
+           
             </div>
-          </fieldset>
+         </fieldset>
         </div>
 
         <div className="existing-bank">
           <br />
           <div>
+          <fieldset style={{
+          padding:"15px"
+        }}>
             <label>
-              <strong>Verify Customer Data</strong>
+              <strong style={{color:"#97d8c4", fontFamily:"Arimo" , fontSize : "20px", fontWeight :"900"}}>Verify Customer Data</strong>
             </label>
             <p>
               <label>Address </label>
               <input type="text" onChange={this.myDataChangeHandler} />
             </p>
             <p>
-              <label>Aadhar </label>
+              <label>ID </label>
               <input type="text" onChange={this.myData1ChangeHandler} />
             </p>
             <p>
-              <label>Pan </label>
+              <label> Pan : Permanent Account Number </label>
               <input type="text" onChange={this.myData2ChangeHandler} />
             </p>
             <button onClick={this.get}>Verify</button>
             <p>Verification : {this.state.verified}</p>
+            </fieldset>
           </div>
         </div>
 
         <div className="existing-customer">
           <br />
           <div>
+          <fieldset style={{
+          padding:"15px"
+        }}>
             <label>
-              <strong>View Customer Status</strong>
+              <strong style={{color:"#97d8c4", fontFamily:"Arimo" , fontSize : "20px", fontWeight :"900"}}>View Customer Status</strong>
             </label>
             <p>
               <button onClick={this.getmystatus}>Get Customer Status</button>
             </p>
             <p>Customer Status is: {this.state.status}</p>
+            </fieldset>
           </div>
+        </div>
+        </div>
+        <div className='col'>
+        <div className='home__hero-text-wrapper'>
+          <div className="form-top-padding">
+        <fieldset style={{
+          padding:"15px",
+          marginRight: "64px"
+        }}>
+          <div>
+            <strong  style={{color:"#fe5f55", fontFamily:"Arimo" , fontSize : "20px", fontWeight :"900"}}>
+            Verified Organisation Addresses
+            </strong>
+            </div>
+          <GetAllBankAccounts
+            bankcount={this.state.bank_count}
+            banks={this.state.allbanks}
+          />
+       </fieldset>
+        </div>
+        </div>
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+       
+
+        <div className='home__hero-img-wrapper'>
+            <img src={kycImg} alt="kyc" className='home__hero-img' />
+            </div>
+            
+            {/* <div className='home__hero-img-wrapper'>
+            <img src={kyc2Img} alt="kyc2" className='home__hero-img' />
+            </div> */}
+            
+          </div>
+        </div>
         </div>
       </div>
     );

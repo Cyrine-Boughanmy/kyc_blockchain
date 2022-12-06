@@ -1,4 +1,6 @@
-pragma solidity >=0.4.21 <0.7.0;
+// SPDX-License-Identifier: GPL-3.0
+pragma experimental ABIEncoderV2;
+pragma solidity ^0.8.17;
 
 interface KYC_Functions{
     enum Status {Accepted, Rejected, Pending}
